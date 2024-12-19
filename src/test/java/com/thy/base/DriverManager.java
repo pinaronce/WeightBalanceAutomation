@@ -77,11 +77,4 @@ public class DriverManager {
             driver.manage().window().maximize();
         }
     }
-
-    private void quitWebDriver() {
-        if (driver != null) {
-            driver.quit();
-            driver = null;
-        }
-    }
 }

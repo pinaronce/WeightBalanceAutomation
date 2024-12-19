@@ -9,6 +9,6 @@ public class HomePageElements {
     public static final Map<String, By> LOCATORS = new HashMap<>();
 
     static {
-        LOCATORS.put("user info section", By.cssSelector("section[class='section-user_info']"));
+        LOCATORS.put("user info section", By.cssSelector("li>a[href='yeme-icme/']"));
     }
 }
