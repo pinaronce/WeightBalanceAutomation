@@ -87,6 +87,8 @@ public class BaseMethods extends DriverManager {
         }
     }
 
+    // The waitBySeconds method will only be used when testing test automation scripts.
+    // It would be more appropriate to use the waitForElement method in our scenarios instead of this one.
     public void waitBySeconds(int seconds) {
         try {
             Thread.sleep(seconds * 1000L);
