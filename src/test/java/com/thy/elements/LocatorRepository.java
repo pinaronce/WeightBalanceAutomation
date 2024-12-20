@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LocatorRepository {
-    private static Map<String, Map<String, By>> pageElementLocators = new HashMap<>();
+    private static final Map<String, Map<String, By>> pageElementLocators = new HashMap<>();
 
     static {
         pageElementLocators.put("home", HomePageElements.LOCATORS);
@@ -22,9 +22,5 @@ public class LocatorRepository {
             throw new IllegalArgumentException("No locator found for element: " + elementName + " on page: " + page);
         }
         return locator;
-    }
-
-    public static Map<String, Map<String, By>> getPageElementLocators() {
-        return pageElementLocators;
     }
 }
