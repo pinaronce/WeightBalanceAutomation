@@ -91,7 +91,7 @@ brew install gauge
 ```
 
 **For Windows:**
-- Download Gauge installer from [official website](https://gauge.org/downloads/)
+- Download Gauge installer from [official website](https://docs.gauge.org/getting_started/installing-gauge.html?os=windows&language=java&ide=vscode)
 - Run the installer and follow the setup wizard
 
 **Verify Installation:**
