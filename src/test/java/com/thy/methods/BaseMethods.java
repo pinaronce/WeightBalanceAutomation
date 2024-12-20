@@ -25,9 +25,14 @@ public class BaseMethods extends DriverManager {
     private static final Duration POLLING_INTERVAL = Duration.ofMillis(DEFAULT_POLLING_INTERVAL_MILLIS);
     
     private WebDriverWait getWait(int timeoutInSeconds) {
-        return new WebDriverWait(driver, Duration.ofSeconds(timeoutInSeconds), Duration.ofMillis(DEFAULT_POLLING_INTERVAL_MILLIS))
-                .ignoring(StaleElementReferenceException.class)
-                .ignoring(NoSuchElementException.class);
+        WebDriverWait wait = new WebDriverWait(
+            driver,
+            Duration.ofSeconds(timeoutInSeconds)
+        );
+        wait.pollingEvery(Duration.ofMillis(DEFAULT_POLLING_INTERVAL_MILLIS));
+        wait.ignoring(StaleElementReferenceException.class);
+        wait.ignoring(NoSuchElementException.class);
+        return wait;
     }
 
     private WebElement waitForElement(String page, String elementName, String condition) {
@@ -286,7 +291,7 @@ public class BaseMethods extends DriverManager {
                 page, expectedTitle, page, expectedTitle);
             String actualTitle = driver.getTitle();
             if (actualTitle != null && actualTitle.equals(expectedTitle)) {
-                logger.info("Page title verification successful. Page '{}' has expected title: '{}' | Sayfa başlığı doğrulaması başarılı. '{}' sayfasının başlığı beklenen değerde: '{}'", 
+                logger.info("Page title verification successful. Page '{}' has expected title: '{}' | Sayfa başlığı do��rulaması başarılı. '{}' sayfasının başlığı beklenen değerde: '{}'", 
                     page, expectedTitle, page, expectedTitle);
             } else {
                 logger.error("Page title verification failed for page '{}'. Expected: '{}', but got: '{}' | '{}' sayfasının başlık doğrulaması başarısız. Beklenen: '{}', alınan: '{}'", 
