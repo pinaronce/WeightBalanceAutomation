@@ -12,27 +12,28 @@ This is a robust, maintainable, and scalable test automation framework designed 
 - **Maven**: Dependency management and build automation tool
 
 ## 🏗 Project Architecture
-
-├── src/
-│   └── test/
-│       ├── java/com/thy/
-│       │   ├── base/
-│       │   │   ├── BrowserConfig.java     # Browser configurations
-│       │   │   └── DriverManager.java     # WebDriver management
-│       │   ├── elements/
-│       │   │   ├── HomePageElements.java  # Page elements
-│       │   │   └── LocatorRepository.java # Element locator management
-│       │   ├── methods/
-│       │   │   └── BaseMethods.java      # Core test methods
-│       │   └── steps/
-│       │       └── BaseSteps.java        # Gauge step implementations
-│       └── resources/
-│           └── log4j2.xml               # Logging configuration
+```
+src/
+├── test/
+│   ├── java/com/thy/
+│   │   ├── base/
+│   │   │   ├── BrowserConfig.java     # Browser configurations
+│   │   │   └── DriverManager.java     # WebDriver management
+│   │   ├── elements/
+│   │   │   ├── HomePageElements.java  # Page elements
+│   │   │   └── LocatorRepository.java # Element locator management
+│   │   ├── methods/
+│   │   │   └── BaseMethods.java       # Core test methods
+│   │   └── steps/
+│   │       └── BaseSteps.java         # Gauge step implementations
+│   └── resources/
+│       └── log4j2.xml                 # Logging configuration
 ├── specs/
 │   ├── concepts/
-│   │   └── example.cpt                  # Reusable test concepts
-│   └── example.spec                     # Test specifications
-└── pom.xml                             # Project configuration
+│   │   └── example.cpt                # Reusable test concepts
+│   └── example.spec                   # Test specifications
+└── pom.xml                           # Project configuration
+```
 
 ## ✨ Key Features
 
