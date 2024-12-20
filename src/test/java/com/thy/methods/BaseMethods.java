@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.support.ui.Select;
 
@@ -16,10 +17,37 @@ import java.util.Map;
 
 public class BaseMethods extends DriverManager {
     private static final Map<String, String> savedValues = new HashMap<>();
-    private static final int DEFAULT_TIMEOUT_SECONDS = 2;
-    private static final int DEFAULT_POLLING_INTERVAL_MILLIS = 500;
-
     private static final Logger logger = LogManager.getLogger(BaseMethods.class);
+    
+    private static final int DEFAULT_TIMEOUT_SECONDS = 10;
+    private static final int EXTENDED_TIMEOUT_SECONDS = 30;
+    private static final int DEFAULT_POLLING_INTERVAL_MILLIS = 100;
+    private static final Duration POLLING_INTERVAL = Duration.ofMillis(DEFAULT_POLLING_INTERVAL_MILLIS);
+    
+    private WebDriverWait getWait(int timeoutInSeconds) {
+        return new WebDriverWait(driver, Duration.ofSeconds(timeoutInSeconds), Duration.ofMillis(DEFAULT_POLLING_INTERVAL_MILLIS))
+                .ignoring(StaleElementReferenceException.class)
+                .ignoring(NoSuchElementException.class);
+    }
+
+    private WebElement waitForElement(String page, String elementName, String condition) {
+        By locator = getLocatorFromPage(page, elementName);
+        WebDriverWait wait = getWait(DEFAULT_TIMEOUT_SECONDS);
+
+        try {
+            return switch (condition.toLowerCase()) {
+                case "clickable" -> wait.until(ExpectedConditions.elementToBeClickable(locator));
+                case "visible" -> wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+                case "presence" -> wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+                default -> throw new IllegalArgumentException("Invalid wait condition: " + condition);
+            };
+        } catch (TimeoutException e) {
+            logger.error("Timeout waiting for element '{}' to be {} on page '{}'", elementName, condition, page);
+            throw new ElementNotInteractableException(
+                String.format("Element '%s' on page '%s' was not %s after %d seconds", 
+                    elementName, page, condition, DEFAULT_TIMEOUT_SECONDS));
+        }
+    }
 
     public void navigateToURL(String url) {
         try {
@@ -58,17 +86,22 @@ public class BaseMethods extends DriverManager {
 
     public void click(String page, String elementName) {
         try {
-            logger.info("Attempting to click element '{}' on page '{}' | '{}' sayfasındaki '{}' elementine tıklanmaya çalışılıyor", 
-                elementName, page, page, elementName);
-            WebElement element = findElement(page, elementName, "clickable");
-            element.click();
-            logger.info("Successfully clicked element '{}' on page '{}' | '{}' sayfasındaki '{}' elementine başarıyla tıklandı", 
-                elementName, page, page, elementName);
+            logger.info("Attempting to click element '{}' on page '{}'", elementName, page);
+            WebElement element = waitForElement(page, elementName, "clickable");
+            
+            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
+            
+            try {
+                element.click();
+            } catch (ElementClickInterceptedException e) {
+                logger.warn("Standard click failed, attempting JavaScript click for element '{}'", elementName);
+                ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
+            }
+            
+            logger.info("Successfully clicked element '{}' on page '{}'", elementName, page);
         } catch (Exception e) {
-            logger.error("Failed to click element '{}' on page '{}'. Error: {} | '{}' sayfasındaki '{}' elementine tıklanamadı. Hata: {}", 
-                elementName, page, e.getMessage(), page, elementName, e.getMessage());
-            logger.debug("Stack trace:", e);
-            throw e;
+            logger.error("Failed to click element '{}' on page '{}'. Error: {}", elementName, page, e.getMessage());
+            throw new RuntimeException("Click operation failed", e);
         }
     }
 
@@ -99,18 +132,27 @@ public class BaseMethods extends DriverManager {
 
     public void enterTextIntoElement(String text, String page, String elementName) {
         try {
-            logger.info("Attempting to enter text '{}' into element '{}' on page '{}' | '{}' sayfasındaki '{}' elementine '{}' metni girilmeye çalışılıyor", 
-                text, elementName, page, page, elementName, text);
-            WebElement element = findElement(page, elementName, "visible");
-            element.clear();
-            element.sendKeys(text);
-            logger.info("Successfully entered text '{}' into element '{}' on page '{}' | '{}' sayfasındaki '{}' elementine '{}' metni başarıyla girildi", 
-                text, elementName, page, page, elementName, text);
+            logger.info("Attempting to enter text '{}' into element '{}' on page '{}'", text, elementName, page);
+            WebElement element = waitForElement(page, elementName, "visible");
+            
+            int maxRetries = 3;
+            for (int i = 0; i < maxRetries; i++) {
+                try {
+                    element.clear();
+                    element.sendKeys(text);
+                    if (element.getAttribute("value").equals(text)) {
+                        break;
+                    }
+                } catch (StaleElementReferenceException e) {
+                    if (i == maxRetries - 1) throw e;
+                    element = waitForElement(page, elementName, "visible");
+                }
+            }
+            
+            logger.info("Successfully entered text into element '{}' on page '{}'", elementName, page);
         } catch (Exception e) {
-            logger.error("Failed to enter text '{}' into element '{}' on page '{}'. Error: {} | '{}' sayfasındaki '{}' elementine '{}' metni girilemedi. Hata: {}", 
-                text, elementName, page, e.getMessage(), page, elementName, text, e.getMessage());
-            logger.debug("Stack trace:", e);
-            throw e;
+            logger.error("Failed to enter text into element '{}' on page '{}'. Error: {}", elementName, page, e.getMessage());
+            throw new RuntimeException("Text entry operation failed", e);
         }
     }
 
@@ -322,8 +364,14 @@ public class BaseMethods extends DriverManager {
     }
 
     public void switchToIframe(String frameName) {
-        WebElement iframe = driver.findElement(By.name(frameName)); // or use By.id, By.cssSelector, etc.
-        driver.switchTo().frame(iframe);
+        try {
+            WebDriverWait wait = getWait(DEFAULT_TIMEOUT_SECONDS);
+            wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.name(frameName)));
+            logger.info("Successfully switched to iframe '{}'", frameName);
+        } catch (Exception e) {
+            logger.error("Failed to switch to iframe '{}'. Error: {}", frameName, e.getMessage());
+            throw new RuntimeException("Frame switch operation failed", e);
+        }
     }
 
     public void switchOutOfIframe() {
@@ -416,32 +464,27 @@ public class BaseMethods extends DriverManager {
         }
     }
 
-
-    private WebElement waitForElement(String page, String elementName, String condition) {
-        By locator = getLocatorFromPage(page, elementName);
-
-        FluentWait<WebDriver> wait = new FluentWait<>(driver)
-                .withTimeout(Duration.ofSeconds(DEFAULT_TIMEOUT_SECONDS))
-                .pollingEvery(Duration.ofMillis(DEFAULT_POLLING_INTERVAL_MILLIS))
-                .ignoring(NoSuchElementException.class, StaleElementReferenceException.class);
-
+    public boolean isElementVisible(String page, String elementName, int timeoutInSeconds) {
         try {
-            WebElement element = wait.until(driver -> {
-                if ("clickable".equals(condition)) {
-                    return ExpectedConditions.elementToBeClickable(locator).apply(driver);
-                } else if ("visible".equals(condition)) {
-                    return ExpectedConditions.visibilityOfElementLocated(locator).apply(driver);
-                }
-                return null;
-            });
-            logger.info("Element '{}' on page '{}' found and is '{}' | '{}' sayfasındaki '{}' elementi bulundu ve '{}' durumunda", 
-                elementName, page, condition, page, elementName, condition);
-            return element;
-        } catch (Exception e) {
-            logger.error("Failed to wait for element '{}' with condition '{}' on page '{}'. Exception: {} | '{}' sayfasındaki '{}' elementi '{}' durumunda beklenemedi. Hata: {}", 
-                elementName, condition, page, e.getMessage(), page, elementName, condition, e.getMessage(), e);
-            throw e;
+            WebDriverWait wait = getWait(timeoutInSeconds);
+            By locator = getLocatorFromPage(page, elementName);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+            return true;
+        } catch (TimeoutException e) {
+            return false;
         }
+    }
+
+    public void waitForPageLoad() {
+        WebDriverWait wait = getWait(EXTENDED_TIMEOUT_SECONDS);
+        wait.until(webDriver -> ((JavascriptExecutor) webDriver)
+                .executeScript("return document.readyState").equals("complete"));
+    }
+
+    public void waitForAjaxComplete() {
+        WebDriverWait wait = getWait(DEFAULT_TIMEOUT_SECONDS);
+        wait.until(webDriver -> (Boolean) ((JavascriptExecutor) webDriver)
+                .executeScript("return jQuery.active == 0"));
     }
 
     private WebElement findElement(String page, String elementName, String condition) {
