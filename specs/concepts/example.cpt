@@ -1,7 +1,0 @@
-Created by pinar.once on 12.12.2024
-
-This is a concept file with following syntax for each concept.
-This is a concept file with following syntax for each concept.
-# Navigate to the <url> website
-* Navigate to the <url>
-* Verify "home" page's "buy and manage tickets button" element exists, fail with "thy website cannot be reached" if absent

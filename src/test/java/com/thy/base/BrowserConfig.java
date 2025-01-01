@@ -13,32 +13,25 @@ public class BrowserConfig {
 
     public static ChromeOptions getChromeOptions() {
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--disable-gpu", "--incognito", "--no-sandbox", "--disable-dev-shm-usage",
-                "--disable-extensions", "--disable-popup-blocking", "--start-maximized",
-                "disable-infobars");
+        options.addArguments("--start-maximized");
+        options.addArguments("--disable-notifications");
+        options.addArguments("--disable-popup-blocking");
         return options;
     }
 
     public static FirefoxOptions getFirefoxOptions() {
         FirefoxOptions options = new FirefoxOptions();
-        options.addArguments("--private", "--start-maximized");
-        options.addPreference("dom.webnotifications.enabled", false);
-        options.addPreference("privacy.trackingprotection.enabled", true);
-        options.addPreference("network.cookie.cookieBehavior", 2);
+        options.addArguments("--start-maximized");
         return options;
     }
 
     public static EdgeOptions getEdgeOptions() {
         EdgeOptions options = new EdgeOptions();
-        options.addArguments("--inprivate", "--disable-gpu", "--start-maximized", "disable-infobars");
+        options.addArguments("--start-maximized");
         return options;
     }
 
     public static SafariOptions getSafariOptions() {
-        SafariOptions options = new SafariOptions();
-        options.setUseTechnologyPreview(false);
-        options.setAutomaticInspection(false);
-        options.setAutomaticProfiling(false);
-        return options;
+        return new SafariOptions();
     }
 }
