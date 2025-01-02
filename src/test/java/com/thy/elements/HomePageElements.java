@@ -9,6 +9,7 @@ public class HomePageElements {
     public static final Map<String, By> LOCATORS = new HashMap<>();
 
     static {
-        LOCATORS.put("buy and manage tickets button", By.cssSelector("ul.nav.navbar-nav.flex-row.mega-menu-main.mr-5.d-none.d-md-flex.flex-for-desktop.float-end li:nth-child(1)>a"));
+        LOCATORS.put("downloads link", By.xpath("//a[contains(text(),'Downloads')]"));
+        LOCATORS.put("downloads text", By.xpath("//h1[contains(text(),'Downloads')]"));
     }
 }

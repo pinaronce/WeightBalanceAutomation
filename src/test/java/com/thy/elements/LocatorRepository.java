@@ -8,41 +8,32 @@ public class LocatorRepository {
     private static final Map<String, Map<String, By>> PAGE_ELEMENTS = new HashMap<>();
 
     static {
-        // Homepage elements
-        Map<String, By> homepageElements = new HashMap<>();
-        homepageElements.put("login_button", By.id("login-button"));
-        // ... diğer homepage elementleri
+        // Ana sayfa elementleri
+        Map<String, By> homePageElements = new HashMap<>();
+        homePageElements.put("loginButton", By.id("login-button"));
+        homePageElements.put("username", By.id("username"));
+        homePageElements.put("password", By.id("password"));
+        PAGE_ELEMENTS.put("home", homePageElements);
 
-        // Login page elements
-        Map<String, By> loginPageElements = new HashMap<>();
-        loginPageElements.put("username_input", By.id("username"));
-        loginPageElements.put("password_input", By.id("password"));
-        // ... diğer login page elementleri
-
-        // Add pages to main map
-        PAGE_ELEMENTS.put("homepage", homepageElements);
-        PAGE_ELEMENTS.put("login_page", loginPageElements);
-        // ... diğer sayfalar
+        // Diğer sayfalar için elementler
+        // ...
     }
 
-    public static By getLocator(String page, String elementName) {
+    public static By getLocator(String page, String element) {
         Map<String, By> pageElements = PAGE_ELEMENTS.get(page.toLowerCase());
         if (pageElements == null) {
             throw new IllegalArgumentException("Page not found: " + page);
         }
-
-        By locator = pageElements.get(elementName.toLowerCase());
+        By locator = pageElements.get(element.toLowerCase());
         if (locator == null) {
             throw new IllegalArgumentException(
-                String.format("Element '%s' not found on page '%s'", elementName, page)
-            );
+                String.format("Element '%s' not found on page '%s'", element, page));
         }
-
         return locator;
     }
 
-    public static void addLocator(String page, String elementName, By locator) {
+    public static void addLocator(String page, String element, By locator) {
         PAGE_ELEMENTS.computeIfAbsent(page.toLowerCase(), k -> new HashMap<>())
-                    .put(elementName.toLowerCase(), locator);
+            .put(element.toLowerCase(), locator);
     }
 }

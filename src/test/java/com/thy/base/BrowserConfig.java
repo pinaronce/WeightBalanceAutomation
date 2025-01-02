@@ -15,23 +15,26 @@ public class BrowserConfig {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--start-maximized");
         options.addArguments("--disable-notifications");
-        options.addArguments("--disable-popup-blocking");
+        options.addArguments("--remote-allow-origins=*");
         return options;
     }
 
     public static FirefoxOptions getFirefoxOptions() {
         FirefoxOptions options = new FirefoxOptions();
-        options.addArguments("--start-maximized");
+        options.addArguments("-private");
         return options;
     }
 
     public static EdgeOptions getEdgeOptions() {
         EdgeOptions options = new EdgeOptions();
         options.addArguments("--start-maximized");
+        options.addArguments("--disable-notifications");
         return options;
     }
 
     public static SafariOptions getSafariOptions() {
-        return new SafariOptions();
+        SafariOptions options = new SafariOptions();
+        options.setAutomaticInspection(false);
+        return options;
     }
 }

@@ -1,176 +1,121 @@
-# Weight Balance Test Automation Framework
+# Weight & Balance Automation Project
 
-## 📋 Overview
-This is a robust, maintainable, and scalable test automation framework designed for web applications. Built with modern testing practices and industry-standard tools, it provides a comprehensive solution for automated testing needs.
+## Proje Hakkında
+Bu proje, THY Weight & Balance sisteminin test otomasyonunu içermektedir. Cucumber BDD framework'ü ve Selenium Grid altyapısı kullanılarak geliştirilmiştir.
 
-## 🛠 Technology Stack
-- **Java 23**: Core programming language with latest features
-- **Selenium WebDriver 4.27.0**: Industry-standard web automation tool
-- **Gauge Framework 0.11.2**: Behavior Driven Development (BDD) test automation framework
-- **JUnit 5.11.4**: Testing framework for validation and assertions
-- **Log4j 2.24.3**: Advanced logging framework
-- **Maven**: Dependency management and build automation tool
+## Teknolojiler ve Özellikler
+- Java 23
+- Selenium WebDriver 4.x
+- Selenium Grid
+- Cucumber BDD
+- TestNG
+- Maven
+- Remote WebDriver desteği
+- Parallel test execution
+- Cross-browser testing
 
-## 🏗 Project Architecture
+## Proje Yapısı
 ```
 src/
 ├── test/
 │   ├── java/com/thy/
 │   │   ├── base/
-│   │   │   ├── BrowserConfig.java     # Browser configurations
-│   │   │   └── DriverManager.java     # WebDriver management
-│   │   ├── elements/
-│   │   │   ├── HomePageElements.java  # Page elements
-│   │   │   └── LocatorRepository.java # Element locator management
-│   │   ├── methods/
-│   │   │   └── BaseMethods.java       # Core test methods
+│   │   │   ├── BrowserConfig.java        # Browser configurations
+│   │   │   ├── ConfigurationManager.java # Configuration management
+│   │   │   ├── DriverManager.java        # WebDriver management
+│   │   │   └── DriverPathManager.java    # Driver path management
+│   │   ├── runners/
+│   │   │   └── TestRunner.java          # Test runner
 │   │   └── steps/
-│   │       └── BaseSteps.java         # Gauge step implementations
+│   │       └── BaseSteps.java           # Step definitions & Hooks
 │   └── resources/
-│       └── log4j2.xml                 # Logging configuration
-├── specs/
-│   ├── concepts/
-│   │   └── example.cpt                # Reusable test concepts
-│   └── example.spec                   # Test specifications
-└── pom.xml                           # Project configuration
+│       └── log4j2.xml                   # Logging configuration
 ```
 
-## ✨ Key Features
+## Özellikler
 
-### 🌐 Multi-Browser Support
-- Chrome, Firefox, Edge, and Safari support
-- Configurable browser options
-- Headless execution capability
-
-### 🔄 Selenium Grid Integration
-- Remote execution support
+### Selenium Grid Entegrasyonu
+- Remote WebDriver desteği
 - Parallel test execution
-- Cross-browser testing capabilities
+- Cross-browser testing
+- Farklı platformlarda test çalıştırma
 
-### 📝 BDD Implementation
-- Gauge framework integration
+### Çoklu Tarayıcı Desteği
+- Chrome
+- Firefox 
+- Edge
+- Safari
+- Headless execution
+
+### BDD Implementation
+- Cucumber entegrasyonu
 - Business-readable specifications
 - Reusable step definitions
-- Multi-language support (English/Turkish)
+- Çoklu dil desteği (Türkçe/İngilizce)
 
-### 🎯 Advanced Test Management
-- Page Object Model implementation
-- Fluent wait strategies
-- Robust element handling
-- Screenshot capture on failure
-- Detailed HTML reports
+### Test Yönetimi
+- Page Object Model
+- Fluent wait stratejileri
+- Screenshot capture
+- HTML raporlama
 
-### 📊 Comprehensive Logging
-- Hierarchical logging structure
-- Both console and file logging
-- Detailed test execution logs
-- Error tracking and debugging support
+## Kurulum
 
-### 🔧 Framework Utilities
-- Dynamic locator management
-- Reusable test methods
-- Custom assertions
-- File upload handling
-- iFrame management
-- Dynamic wait implementations
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Java 23 JDK
+### Gereksinimler
+- Java 11 JDK
 - Maven 3.8+
-- Gauge CLI
-- WebDriver binaries (chromedriver, geckodriver, etc.)
+- Selenium Grid (opsiyonel)
+- WebDriver binary'leri
 
-### Installation
-#### 1. Install Gauge Framework
+### Projeyi Çalıştırma
 
-**For Linux/macOS:**
-```bash
-brew install gauge
-```
-
-**For Windows:**
-- Download Gauge installer from [official website](https://docs.gauge.org/getting_started/installing-gauge.html?os=windows&language=java&ide=vscode)
-- Run the installer and follow the setup wizard
-
-**Verify Installation:**
-```bash
-gauge --version
-```
-
-#### 2. Install WebDriver Binaries
-- Download appropriate WebDriver versions matching your browser:
-  - [ChromeDriver](https://sites.google.com/chromium.org/driver/)
-  - [GeckoDriver](https://github.com/mozilla/geckodriver/releases) (Firefox)
-  - [EdgeDriver](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/)
-- Add WebDriver locations to system PATH
-
-#### 3. Clone and Setup Project
-**Clone Repository:**
-```bash
-git clone https://github.com/pinaronce/WeightBalanceAutomation.git
-cd WeightBalanceAutomation
-```
-
-**Install Dependencies:**
-```bash
-mvn clean install
-```
-
-**Install Gauge Plugins:**
-```bash
-gauge install java
-gauge install html-report
-gauge install json-report
-```
-
-#### 4. Configure Environment
-- Copy `env/default/default.properties.example` to `env/default/default.properties`
-- Update configuration values as needed
-- Set up browser-specific configurations in `src/test/java/com/thy/base/BrowserConfig.java`
-
-### Running Tests
-
-#### Execute all tests:
+#### Tüm testleri çalıştırma:
 ```bash
 mvn test
 ```
 
-#### Run specific spec:
-```bash
-gauge run specs/example.spec
-```
-
-#### Run with specific browser:
-```bash
-mvn test -Dbrowser=CHROME
-```
-
-## ⚙️ Configuration
-
-### Browser Configuration
-Available options:
-- CHROME
-- FIREFOX
-- EDGE
-- SAFARI
-
-### Grid Configuration
+#### Grid üzerinde çalıştırma:
 ```bash
 mvn test -DuseGrid=true -DgridUrl=http://localhost:4444/wd/hub
 ```
 
-## 📈 Reporting
-- Detailed HTML reports generated by Gauge
-- Step-level execution details
-- Screenshot attachments for failures
-- Execution timeline
-- Error logs and stack traces
+#### Belirli bir tarayıcıda çalıştırma:
+```bash
+mvn test -Dbrowser=chrome
+```
 
-## 🤝 Contributing
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+## Raporlama
+- Cucumber HTML raporları
+- TestNG raporları
+- Screenshot'lar
+- Execution timeline
+- Hata logları
+
+## Katkıda Bulunma
+1. Repository'yi fork edin
+2. Feature branch oluşturun (`git checkout -b feature/YeniOzellik`)
+3. Değişikliklerinizi commit edin (`git commit -m 'Yeni özellik eklendi'`)
+4. Branch'inizi push edin (`git push origin feature/YeniOzellik`)
+5. Pull Request oluşturun
+
+## Driver Kurulumu
+
+1. Chrome tarayıcınızın versiyonunu öğrenin:
+   - Chrome'u açın
+   - `chrome://version` adresine gidin
+   - Versiyon numarasını not alın (örn: 120.0.6099.130)
+
+2. ChromeDriver indirin:
+   - https://chromedriver.chromium.org/downloads adresine gidin
+   - Chrome versiyonunuza uygun driver'ı indirin
+   - Zip/rar dosyasını açın
+
+3. Driver dosyasını kopyalayın:
+   - Projenin root klasöründe `drivers` klasörü oluşturun
+   - Windows için: `chromedriver.exe`'yi bu klasöre kopyalayın
+   - Linux/Mac için: `chromedriver`'ı bu klasöre kopyalayın
+
+4. Linux/Mac için ek adım:
+   ```bash
+   chmod +x drivers/chromedriver
+   ```

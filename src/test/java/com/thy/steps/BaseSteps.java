@@ -1,30 +1,17 @@
 package com.thy.steps;
 
 import com.thy.methods.BaseMethods;
-import com.thy.base.DriverManager;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
 
 public class BaseSteps {
-    private final BaseMethods baseMethods;
-    private final DriverManager driverManager;
-
-    public BaseSteps() {
-        this.baseMethods = new BaseMethods();
-        this.driverManager = new DriverManager();
-    }
+    private final BaseMethods baseMethods = new BaseMethods();
 
     @Given("Navigate to {string}")
-    @Given("{string} adresi ziyaret edilir")
+    @Given("{string} adresine git")
     public void navigateToURL(String url) {
-        driverManager.getDriver().get(url);
-    }
-
-    @When("Click on {string} page {string} element")
-    @When("{string} sayfasındaki {string} elementine tıklanır")
-    public void clickElement(String page, String elementName) {
-        baseMethods.click(page, elementName);
+        baseMethods.navigateToURL(url);
     }
 
     @Then("Verify the current URL is {string}")
@@ -33,123 +20,135 @@ public class BaseSteps {
         baseMethods.verifyURL(expectedURL);
     }
 
-    @When("Click if element exists on {string} page {string} element")
-    @When("{string} sayfasındaki {string} elementi varsa tıklanır")
+    @When("Refresh the current page")
+    @When("Mevcut sayfayı yenile")
+    public void refreshPage() {
+        baseMethods.refreshPage();
+    }
+
+    @When("Switch to the new tab at index {int}")
+    @When("Yeni sekmeye {int} indeksinde geç")
+    public void switchToTab(int tabIndex) {
+        baseMethods.switchTab(tabIndex);
+    }
+
+    @When("Click on {string} page's {string} element")
+    @When("{string} sayfasındaki {string} elementine tıklanır")
+    public void clickElement(String page, String elementName) {
+        baseMethods.click(page, elementName);
+    }
+
+    @When("Click on the {string} page's {string} element if it exists")
+    @When("{string} sayfasındaki {string} elementine varsa tıklanır")
     public void clickIfElementExists(String page, String elementName) {
         baseMethods.clickIfElementExists(page, elementName);
     }
 
     @When("Wait {int} seconds")
     @When("{int} saniye bekle")
-    public void waitBySeconds(int seconds) {
-        baseMethods.waitBySeconds(seconds);
+    public void waitForSeconds(int value) {
+        baseMethods.waitBySeconds(value);
     }
 
-    @When("Enter {string} text to {string} page's {string} element")
+    @When("Write {string} to the {string} page's {string} element")
     @When("{string} sayfasındaki {string} elementine {string} yazılır")
-    public void enterText(String text, String page, String elementName) {
+    public void enterTextIntoPageElement(String text, String page, String elementName) {
         baseMethods.enterTextIntoElement(text, page, elementName);
     }
 
-    @When("Press enter key on {string} page's {string} element")
+    @When("Press enter on {string} page's {string} element")
     @When("{string} sayfasındaki {string} elementine enter tuşuna basılır")
     public void pressEnter(String page, String elementName) {
         baseMethods.pressEnterOnElement(page, elementName);
     }
 
-    @Then("Check if element exists on {string} page's {string} element with error message {string}")
-    @Then("{string} sayfasındaki {string} elementi {string} hata mesajı ile kontrol edilir")
-    public void checkElementExistence(String page, String elementName, String errorMessage) {
+    @Then("Check if {string} page's {string} element exists")
+    @Then("{string} sayfasındaki {string} elementinin var olup olmadığı kontrol edilir")
+    public void checkElementExistence(String page, String elementName) {
+        baseMethods.checkElementExistence(page, elementName);
+    }
+
+    @Then("Verify <page> page's <elementName> element exists, fail with <errorMessage> if absent")
+    @Then("<page> sayfasındaki <elementName> elementinin var olduğu doğrulanır, eğer yoksa <errorMessage> ile hata verilir")
+    public void checkElementExistenceOrFail(String page, String elementName, String errorMessage) {
         baseMethods.checkElementExistenceOrFail(page, elementName, errorMessage);
     }
 
-    @Then("Verify text of {string} page's {string} element is {string}")
-    @Then("{string} sayfasındaki {string} elementinin metni {string} ile aynı olduğu doğrulanır")
-    public void verifyElementText(String page, String elementName, String expectedText) {
-        baseMethods.verifyElementTextIgnoreCase(page, elementName, expectedText);
+    @Then("On the <pageName> page, save the text value of the <elementName> element as <saveKey>")
+    @Then("<pageName> sayfasındaki <elementName> elementinin metin değeri <saveKey> olarak kaydedilir")
+    public void saveTextValueOfElement(String pageName, String elementName, String saveKey) {
+        baseMethods.saveTextValueOfElement(pageName, elementName, saveKey);
     }
 
-    @Then("Save text of {string} page's {string} element with key {string}")
-    @Then("{string} sayfasındaki {string} elementinin metni {string} anahtarı ile kaydedilir")
-    public void saveElementText(String page, String elementName, String key) {
-        baseMethods.saveTextValueOfElement(page, elementName, key);
+    @Then("On the <pageName> page, compare the text of the <elementName> element to the saved value with key <expectedValueKey>")
+    @Then("<pageName> sayfasındaki <elementName> elementinin metni, <expectedValueKey> anahtarıyla kaydedilen değerle karşılaştırılır")
+    public void compareElementTextToSavedValue(String pageName, String elementName, String expectedValueKey) {
+        baseMethods.compareElementTextToSavedValue(pageName, elementName, expectedValueKey);
     }
 
-    @Then("Compare text of {string} page's {string} element with saved value {string}")
-    @Then("{string} sayfasındaki {string} elementinin metni {string} değeri ile karşılaştırılır")
-    public void compareElementText(String page, String elementName, String key) {
-        baseMethods.compareElementTextToSavedValue(page, elementName, key);
-    }
-
-    @Then("Verify page title is {string} on {string} page")
-    @Then("{string} sayfasının başlığının {string} olduğu doğrulanır")
+    @Then("Verify the title of the <page> page is <expectedTitle>")
+    @Then("<page> sayfasının başlığının <expectedTitle> olduğu doğrulanır")
     public void verifyPageTitle(String page, String expectedTitle) {
         baseMethods.verifyPageTitle(page, expectedTitle);
     }
 
-    @When("Scroll to {string} page's {string} element")
-    @When("{string} sayfasındaki {string} elementine scroll edilir")
-    public void scrollToElement(String page, String elementName) {
-        baseMethods.scrollToElement(page, elementName);
-    }
-
-    @When("Switch to iframe {string}")
-    @When("{string} iframe'ine geçiş yapılır")
-    public void switchToIframe(String frameName) {
-        baseMethods.switchToIframe(frameName);
-    }
-
-    @When("Switch out of iframe")
-    @When("iframe'den çıkılır")
-    public void switchOutOfIframe() {
-        baseMethods.switchOutOfIframe();
-    }
-
-    @Then("Verify {string} page's {string} element's {string} attribute is {string}")
-    @Then("{string} sayfasındaki {string} elementinin {string} niteliği {string} olduğu doğrulanır")
-    public void verifyElementAttribute(String page, String elementName, String attributeName, String expectedValue) {
-        baseMethods.verifyElementAttribute(page, elementName, attributeName, expectedValue);
-    }
-
-    @When("Select {string} option from {string} page's {string} dropdown")
-    @When("{string} sayfasındaki {string} dropdown'ından {string} seçeneği seçilir")
-    public void selectDropdownOption(String option, String page, String dropdown) {
-        baseMethods.selectDropdownOption(page, dropdown, option);
-    }
-
-    @When("Upload file {string} to {string} page's {string} element")
-    @When("{string} dosyası {string} sayfasındaki {string} elementine yüklenir")
-    public void uploadFile(String filePath, String page, String elementName) {
-        baseMethods.uploadFile(page, elementName, filePath);
-    }
-
-    @Then("Verify image is visible on {string} page's {string} element")
-    @Then("{string} sayfasındaki {string} görselinin görünür olduğu doğrulanır")
-    public void verifyImageVisibility(String page, String elementName) {
-        baseMethods.verifyImageVisibility(page, elementName);
-    }
-
-    @Then("Verify element is enabled on {string} page's {string} element")
-    @Then("{string} sayfasındaki {string} elementinin aktif olduğu doğrulanır")
+    @Then("Verify <page> page's <elementName> element is enabled")
+    @Then("<page> sayfasındaki <elementName> elementinin etkin olduğu doğrulanır")
     public void verifyElementIsEnabled(String page, String elementName) {
         baseMethods.verifyElementIsEnabled(page, elementName);
     }
 
-    @Then("Verify element is disabled on {string} page's {string} element")
-    @Then("{string} sayfasındaki {string} elementinin devre dışı olduğu doğrulanır")
+    @Then("Verify <page> page's <elementName> element is disabled")
+    @Then("<page> sayfasındaki <elementName> elementinin devre dışı olduğu doğrulanır")
     public void verifyElementIsDisabled(String page, String elementName) {
         baseMethods.verifyElementIsDisabled(page, elementName);
     }
 
-    @When("Switch to tab {int}")
-    @When("{int} numaralı sekmeye geçilir")
-    public void switchTab(int tabIndex) {
-        baseMethods.switchTab(tabIndex);
+    @Then("Verify the text of <page> page's <elementName> is <expectedText>")
+    @Then("<page> sayfasındaki <elementName> elementinin metninin <expectedText> olduğu doğrulanır")
+    public void verifyElementText(String page, String elementName, String expectedText) {
+        baseMethods.verifyElementText(page, elementName, expectedText);
     }
 
-    @When("Refresh page")
-    @When("Sayfa yenilenir")
-    public void refreshPage() {
-        baseMethods.refreshPage();
+    @Then("Scroll to the <elementName> element on <page> page")
+    @Then("<page> sayfasındaki <elementName> elementine kaydırılır")
+    public void scrollToElement(String page, String elementName) {
+        baseMethods.scrollToElement(page, elementName);
+    }
+
+    @Then("Switch to the <frameName> iFrame")
+    @Then("<frameName> iFrame'ine geçilir")
+    public void switchToIframe(String frameName) {
+        baseMethods.switchToIframe(frameName);
+    }
+
+    @Then("Switch out of the iFrame")
+    @Then("iFrame'den çıkılır")
+    public void switchOutOfIframe() {
+        baseMethods.switchOutOfIframe();
+    }
+
+    @Then("Verify <page> page's <elementName> element's <attributeName> attribute is <expectedValue>")
+    @Then("<page> sayfasındaki <elementName> elementinin <attributeName> niteliğinin <expectedValue> olduğu doğrulanır")
+    public void verifyElementAttribute(String page, String elementName, String attributeName, String expectedValue) {
+        baseMethods.verifyElementAttribute(page, elementName, attributeName, expectedValue);
+    }
+
+    @Then("Select <option> from the <page> page's <dropdown> dropdown")
+    @Then("<page> sayfasındaki <dropdown> dropdown'ından <option> seçilir")
+    public void selectDropdownOption(String page, String dropdown, String option) {
+        baseMethods.selectDropdownOption(page, dropdown, option);
+    }
+
+    @Then("Upload <filePath> file on <page> page's <elementName> element")
+    @Then("<page> sayfasındaki <elementName> elementine <filePath> dosyası yüklenir")
+    public void uploadFile(String page, String elementName, String filePath) {
+        baseMethods.uploadFile(page, elementName, filePath);
+    }
+
+    @Then("Verify <page> page's <imageName> image is visible")
+    @Then("<page> sayfasındaki <imageName> görselinin görünür olduğu doğrulanır")
+    public void verifyImageVisibility(String page, String imageName) {
+        baseMethods.verifyImageVisibility(page, imageName);
     }
 }
