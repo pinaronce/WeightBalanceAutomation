@@ -3,37 +3,33 @@ package com.thy.elements;
 import org.openqa.selenium.By;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class LocatorRepository {
-    private static final Map<String, Map<String, By>> PAGE_ELEMENTS = new HashMap<>();
+    private static final Logger logger = LogManager.getLogger(LocatorRepository.class);
+    private static final Map<String, Map<String, By>> elementRepository = new HashMap<>();
 
     static {
-        // Ana sayfa elementleri
-        Map<String, By> homePageElements = new HashMap<>();
-        homePageElements.put("loginButton", By.id("login-button"));
-        homePageElements.put("username", By.id("username"));
-        homePageElements.put("password", By.id("password"));
-        PAGE_ELEMENTS.put("home", homePageElements);
-
-        // Diğer sayfalar için elementler
-        // ...
+        HomePageElements.LOCATORS.forEach((element, locator) -> addLocator("homepage", element, locator));
     }
 
     public static By getLocator(String page, String element) {
-        Map<String, By> pageElements = PAGE_ELEMENTS.get(page.toLowerCase());
-        if (pageElements == null) {
-            throw new IllegalArgumentException("Page not found: " + page);
+        Map<String, By> pageElements = elementRepository.get(page.toLowerCase());
+        if (pageElements == null || !pageElements.containsKey(element.toLowerCase())) {
+            String errorMessage = String.format("Element '%s' not found on page '%s'", element, page);
+            logger.error(errorMessage + " | '%s' sayfasında '%s' elementi bulunamadı", element, page);
+            throw new IllegalArgumentException(errorMessage);
         }
-        By locator = pageElements.get(element.toLowerCase());
-        if (locator == null) {
-            throw new IllegalArgumentException(
-                String.format("Element '%s' not found on page '%s'", element, page));
-        }
-        return locator;
+        return pageElements.get(element.toLowerCase());
     }
 
     public static void addLocator(String page, String element, By locator) {
-        PAGE_ELEMENTS.computeIfAbsent(page.toLowerCase(), k -> new HashMap<>())
-            .put(element.toLowerCase(), locator);
+        elementRepository
+                .computeIfAbsent(page.toLowerCase(), k -> new HashMap<>())
+                .put(element.toLowerCase(), locator);
+
+        logger.info("Locator added for element '{}' on page '{}' | '{}' sayfasına '{}' elementi için locator eklendi",
+                element, page, page, element);
     }
 }

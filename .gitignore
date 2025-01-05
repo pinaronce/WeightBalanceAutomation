@@ -68,3 +68,85 @@ allure-results/
 extent-reports/
 test-output/
 
+# IDE dosyaları
+.idea/
+*.iml
+*.iws
+.settings/
+.classpath
+.project
+.vscode/
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# Gradle
+.gradle/
+build/
+
+# Logs
+logs/
+*.log
+log/
+test-output/
+reports/
+screenshots/
+
+# Test raporları ve geçici dosyalar
+allure-results/
+.allure/
+test-output/
+extent-reports/
+reports/
+screenshots/
+
+# Selenium ve WebDriver ile ilgili
+*.exe
+chromedriver*
+geckodriver*
+IEDriverServer*
+MicrosoftWebDriver*
+SafariDriver*
+operadriver*
+edgedriver*
+
+# Sistem dosyaları
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Derlenmiş dosyalar
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Debug ve geçici dosyalar
+*.debug
+*.tmp
+*.temp
+*.bak
+
+# Özel proje dosyaları
+config.properties
+application.properties
+test.properties
+*.env
+
+# Cache dosyaları
+.cache/
+*.cache
+

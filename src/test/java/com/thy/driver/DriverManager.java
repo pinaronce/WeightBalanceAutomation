@@ -1,4 +1,4 @@
-package com.thy.base;
+package com.thy.driver;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;

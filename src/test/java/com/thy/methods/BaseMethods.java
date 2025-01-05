@@ -1,6 +1,6 @@
 package com.thy.methods;
 
-import com.thy.base.DriverManager;
+import com.thy.driver.DriverManager;
 import com.thy.elements.LocatorRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class BaseMethods extends DriverManager {
     private static final Map<String, String> savedValues = new HashMap<>();
-    private static final int DEFAULT_TIMEOUT_SECONDS = 2;
+    private static final int DEFAULT_TIMEOUT_SECONDS = 3;
     private static final int DEFAULT_POLLING_INTERVAL_MILLIS = 100;
 
     private static final Logger logger = LogManager.getLogger(BaseMethods.class);
