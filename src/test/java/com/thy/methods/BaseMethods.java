@@ -23,7 +23,7 @@ public class BaseMethods extends DriverManager {
 
     public void navigateToURL(String url) {
         try {
-            driver.get(url);
+            getDriver().get(url);
             logger.info("Successfully navigated to URL: {} | URL'ye başarıyla gidildi: {}", url, url);
         } catch (Exception e) {
             logger.error("Failed to navigate to URL: '{}'. Exception: {} | URL'ye gidilemedi: '{}'. Hata: {}",
@@ -34,7 +34,7 @@ public class BaseMethods extends DriverManager {
 
     public void refreshPage() {
         try {
-            driver.navigate().refresh();
+            getDriver().navigate().refresh();
             logger.info("Page refreshed successfully | Sayfa başarıyla yenilendi");
         } catch (Exception e) {
             logger.error("Failed to refresh the page. Exception: {} | Sayfa yenilenemedi. Hata: {}",
@@ -45,8 +45,8 @@ public class BaseMethods extends DriverManager {
 
     public void switchTab(int tabIndex) {
         try {
-            var allWindowHandles = driver.getWindowHandles();
-            driver.switchTo().window((String) allWindowHandles.toArray()[tabIndex]);
+            var allWindowHandles = getDriver().getWindowHandles();
+            getDriver().switchTo().window((String) allWindowHandles.toArray()[tabIndex]);
             logger.info("Successfully switched to tab at index {} | {} indeksli sekmeye başarıyla geçildi",
                     tabIndex, tabIndex);
         } catch (Exception e) {
@@ -216,7 +216,7 @@ public class BaseMethods extends DriverManager {
     public void checkElementExistence(String page, String elementName) {
         try {
             By locator = LocatorRepository.getLocator(page, elementName);
-            driver.findElement(locator);
+            getDriver().findElement(locator);
             logger.info("Element '{}' exists on page '{}' | '{}' sayfasında '{}' elementi mevcut",
                     elementName, page, page, elementName);
         } catch (NoSuchElementException e) {
@@ -229,7 +229,7 @@ public class BaseMethods extends DriverManager {
     public void saveTextValueOfElement(String page, String elementName, String saveKey) {
         try {
             By locator = LocatorRepository.getLocator(page, elementName);
-            WebElement element = driver.findElement(locator);
+            WebElement element = getDriver().findElement(locator);
             savedValues.put(saveKey, element.getText());
             logger.info("Saved text value of element '{}' from page '{}' with key '{}' | '{}' sayfasındaki '{}' elementinin metni '{}' anahtarı ile kaydedildi",
                     elementName, page, saveKey, page, elementName, saveKey);
@@ -244,7 +244,7 @@ public class BaseMethods extends DriverManager {
         try {
             logger.info("Attempting to verify page title for page '{}'. Expected title: '{}' | '{}' sayfasının başlığı doğrulanıyor. Beklenen başlık: '{}'",
                     page, expectedTitle, page, expectedTitle);
-            String actualTitle = driver.getTitle();
+            String actualTitle = getDriver().getTitle();
             if (actualTitle != null && actualTitle.equals(expectedTitle)) {
                 logger.info("Page title verification successful. Page '{}' has expected title: '{}' | Sayfa başlığı doğrulaması başarılı. '{}' sayfasının başlığı beklenen değerde: '{}'",
                         page, expectedTitle, page, expectedTitle);
@@ -319,22 +319,22 @@ public class BaseMethods extends DriverManager {
 
     public void scrollToElement(String page, String elementName) {
         WebElement element = findElement(page, elementName, "visible");  // Add "visible" condition
-        JavascriptExecutor js = (JavascriptExecutor) driver;
+        JavascriptExecutor js = (JavascriptExecutor) getDriver();
         js.executeScript("arguments[0].scrollIntoView();", element);
     }
 
     public void switchToIframe(String frameName) {
-        WebElement iframe = driver.findElement(By.name(frameName)); // or use By.id, By.cssSelector, etc.
-        driver.switchTo().frame(iframe);
+        WebElement iframe = getDriver().findElement(By.name(frameName)); // or use By.id, By.cssSelector, etc.
+        getDriver().switchTo().frame(iframe);
     }
 
     public void switchOutOfIframe() {
-        driver.switchTo().defaultContent();
+        getDriver().switchTo().defaultContent();
     }
 
     public void verifyElementAttribute(String page, String elementName, String attributeName, String expectedValue) {
         WebElement element = findElement(page, elementName, "visible");
-        JavascriptExecutor js = (JavascriptExecutor) driver;
+        JavascriptExecutor js = (JavascriptExecutor) getDriver();
         String actualValue = (String) js.executeScript("return arguments[0].getAttribute(arguments[1]);", element, attributeName);
         if (actualValue == null || !actualValue.equals(expectedValue)) {
             throw new AssertionError("Expected attribute value: " + expectedValue + " but got: " + actualValue);
@@ -346,7 +346,7 @@ public class BaseMethods extends DriverManager {
         try {
             logger.info("Attempting to verify current URL. Expected URL: '{}' | Mevcut URL doğrulanıyor. Beklenen URL: '{}'",
                     expectedURL, expectedURL);
-            String currentURL = driver.getCurrentUrl();
+            String currentURL = getDriver().getCurrentUrl();
             if (currentURL.equals(expectedURL)) {
                 logger.info("URL verification successful. Current URL matches expected URL: '{}' | URL doğrulaması başarılı. Mevcut URL beklenen URL ile eşleşiyor: '{}'",
                         expectedURL, expectedURL);
@@ -421,32 +421,21 @@ public class BaseMethods extends DriverManager {
 
     private WebElement waitForElement(String page, String elementName, String condition) {
         By locator = getLocatorFromPage(page, elementName);
-
-        FluentWait<WebDriver> wait = new FluentWait<>(driver)
+        FluentWait<WebDriver> wait = new FluentWait<>(getDriver())
                 .withTimeout(Duration.ofSeconds(DEFAULT_TIMEOUT_SECONDS))
                 .pollingEvery(Duration.ofMillis(DEFAULT_POLLING_INTERVAL_MILLIS))
-                .ignoring(NoSuchElementException.class, StaleElementReferenceException.class);
+                .ignoring(NoSuchElementException.class);
 
-        try {
-            WebElement element = wait.until(driver -> {
-                if ("clickable".equals(condition)) {
-                    return ExpectedConditions.elementToBeClickable(locator).apply(driver);
-                } else if ("visible".equals(condition)) {
-                    return ExpectedConditions.visibilityOfElementLocated(locator).apply(driver);
-                }
-                return null;
-            });
-            logger.info("Element '{}' on page '{}' found and is '{}' | '{}' sayfasındaki '{}' elementi bulundu ve '{}' durumunda",
-                    elementName, page, condition, page, elementName, condition);
-            return element;
-        } catch (Exception e) {
-            logger.error("Failed to wait for element '{}' with condition '{}' on page '{}'. Exception: {} | '{}' sayfasındaki '{}' elementi '{}' durumunda beklenemedi. Hata: {}",
-                    elementName, condition, page, e.getMessage(), page, elementName, condition, e.getMessage(), e);
-            throw e;
-        }
+        return switch (condition.toLowerCase()) {
+            case "clickable" -> wait.until(ExpectedConditions.elementToBeClickable(locator));
+            case "visible" -> wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+            case "present" -> wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+            default -> wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+        };
     }
 
     private WebElement findElement(String page, String elementName, String condition) {
+        By locator = LocatorRepository.getLocator(page, elementName);
         return waitForElement(page, elementName, condition);
     }
 
