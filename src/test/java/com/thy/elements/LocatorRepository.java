@@ -18,7 +18,7 @@ public class LocatorRepository {
         Map<String, By> pageElements = elementRepository.get(page.toLowerCase());
         if (pageElements == null || !pageElements.containsKey(element.toLowerCase())) {
             String errorMessage = String.format("Element '%s' not found on page '%s'", element, page);
-            logger.error(errorMessage + " | '%s' sayfasında '%s' elementi bulunamadı", element, page);
+            logger.error(String.format("%s | '%s' sayfasında '%s' elementi bulunamadı", errorMessage, page, element));
             throw new IllegalArgumentException(errorMessage);
         }
         return pageElements.get(element.toLowerCase());
@@ -28,8 +28,5 @@ public class LocatorRepository {
         elementRepository
                 .computeIfAbsent(page.toLowerCase(), k -> new HashMap<>())
                 .put(element.toLowerCase(), locator);
-
-        logger.info("Locator added for element '{}' on page '{}' | '{}' sayfasına '{}' elementi için locator eklendi",
-                element, page, page, element);
     }
 }

@@ -1,121 +1,96 @@
-# Weight & Balance Automation Project
+# Weight Balance Automation Project
 
 ## Proje Hakkında
-Bu proje, THY Weight & Balance sisteminin test otomasyonunu içermektedir. Cucumber BDD framework'ü ve Selenium Grid altyapısı kullanılarak geliştirilmiştir.
+Bu proje, uçak ağırlık ve denge hesaplamalarının otomatize edilmiş testlerini içeren bir test otomasyon projesidir. Selenium WebDriver ve Cucumber BDD framework'ü kullanılarak Java programlama dili ile geliştirilmiştir.
 
 ## Teknolojiler ve Özellikler
-- Java 23
-- Selenium WebDriver 4.x
-- Selenium Grid
-- Cucumber BDD
-- TestNG
+- Java 22
+- Selenium WebDriver 4.27.0
+- Cucumber 7.15.0
+- JUnit 5.10.2
+- Log4j 2.23.0
 - Maven
-- Remote WebDriver desteği
-- Parallel test execution
-- Cross-browser testing
+- Cucumber HTML Reports
 
 ## Proje Yapısı
 ```
-src/
-├── test/
-│   ├── java/com/thy/
-│   │   ├── base/
-│   │   │   ├── BrowserConfig.java        # Browser configurations
-│   │   │   ├── ConfigurationManager.java # Configuration management
-│   │   │   ├── DriverManager.java        # WebDriver management
-│   │   │   └── DriverPathManager.java    # Driver path management
-│   │   ├── runners/
-│   │   │   └── TestRunner.java          # Test runner
-│   │   └── steps/
-│   │       └── BaseSteps.java           # Step definitions & Hooks
-│   └── resources/
-│       └── log4j2.xml                   # Logging configuration
+weight-balance-automation/
+├── src/
+│   ├── test/
+│   │   ├── java/
+│   │   │   └── com/thy/
+│   │   │       ├── driver/
+│   │   │       │   ├── BrowserConfig.java
+│   │   │       │   └── DriverManager.java
+│   │   │       ├── elements/
+│   │   │       │   ├── HomePageElements.java
+│   │   │       │   └── LocatorRepository.java
+│   │   │       ├── methods/
+│   │   │       │   └── BaseMethods.java
+│   │   │       ├── runners/
+│   │   │       └── steps/
+│   │   └── resources/
+│   │       ├── features/
+│   │       └── cucumber.properties
+├── drivers/
+├── logs/
+├── reports/
+├── pom.xml
+└── README.md
 ```
-
-## Özellikler
-
-### Selenium Grid Entegrasyonu
-- Remote WebDriver desteği
-- Parallel test execution
-- Cross-browser testing
-- Farklı platformlarda test çalıştırma
-
-### Çoklu Tarayıcı Desteği
-- Chrome
-- Firefox 
-- Edge
-- Safari
-- Headless execution
-
-### BDD Implementation
-- Cucumber entegrasyonu
-- Business-readable specifications
-- Reusable step definitions
-- Çoklu dil desteği (Türkçe/İngilizce)
-
-### Test Yönetimi
-- Page Object Model
-- Fluent wait stratejileri
-- Screenshot capture
-- HTML raporlama
 
 ## Kurulum
+1. Gereksinimleri yükleyin:
+   - Java 22 JDK
+   - Maven
 
-### Gereksinimler
-- Java 11 JDK
-- Maven 3.8+
-- Selenium Grid (opsiyonel)
-- WebDriver binary'leri
-
-### Projeyi Çalıştırma
-
-#### Tüm testleri çalıştırma:
+2. Projeyi klonlayın:
 ```bash
-mvn test
+git clone https://github.com/yourusername/weight-balance-automation.git
+cd weight-balance-automation
 ```
 
-#### Grid üzerinde çalıştırma:
+3. Maven bağımlılıklarını yükleyin:
 ```bash
-mvn test -DuseGrid=true -DgridUrl=http://localhost:4444/wd/hub
+mvn clean install
 ```
 
-#### Belirli bir tarayıcıda çalıştırma:
+## Testleri Çalıştırma
+Tüm testleri çalıştırmak için:
 ```bash
-mvn test -Dbrowser=chrome
+mvn clean test
+```
+
+Belirli bir tag ile testleri çalıştırmak için:
+```bash
+mvn test -Dcucumber.filter.tags="@smoke"
 ```
 
 ## Raporlama
-- Cucumber HTML raporları
-- TestNG raporları
-- Screenshot'lar
-- Execution timeline
-- Hata logları
+Test çalıştırması tamamlandıktan sonra, raporlar aşağıdaki konumda oluşturulacaktır:
+- HTML Report: `target/cucumber-reports/report.html`
+- JSON Report: `target/cucumber-reports/cucumber.json`
+
+## Loglama
+- Log dosyaları `logs/` dizininde oluşturulur
+- Log mesajları hem İngilizce hem Türkçe olarak kaydedilir
+- Log seviyeleri: INFO, ERROR, DEBUG
+
+## Test Framework Özellikleri
+- Page Object Model (POM) tasarım deseni
+- Cucumber BDD yaklaşımı
+- Çift dilli (TR/EN) log desteği
+- Paralel test çalıştırma desteği
+- Detaylı HTML raporlama
+- Screenshot özelliği
+- Cross-browser test desteği
 
 ## Katkıda Bulunma
-1. Repository'yi fork edin
-2. Feature branch oluşturun (`git checkout -b feature/YeniOzellik`)
-3. Değişikliklerinizi commit edin (`git commit -m 'Yeni özellik eklendi'`)
-4. Branch'inizi push edin (`git push origin feature/YeniOzellik`)
-5. Pull Request oluşturun
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## Driver Kurulumu
-
-1. Chrome tarayıcınızın versiyonunu öğrenin:
-   - Chrome'u açın
-   - `chrome://version` adresine gidin
-   - Versiyon numarasını not alın (örn: 120.0.6099.130)
-
-2. ChromeDriver indirin:
-   - https://chromedriver.chromium.org/downloads adresine gidin
-   - Chrome versiyonunuza uygun driver'ı indirin
-   - Zip/rar dosyasını açın
-
-3. Driver dosyasını kopyalayın:
-   - Projenin root klasöründe `drivers` klasörü oluşturun
-   - Windows için: `chromedriver.exe`'yi bu klasöre kopyalayın
-   - Linux/Mac için: `chromedriver`'ı bu klasöre kopyalayın
-
-4. Linux/Mac için ek adım:
-   ```bash
-   chmod +x drivers/chromedriver
-   ```
+## Lisans
+Bu proje MIT lisansı altında lisanslanmıştır - Detaylar için [LICENSE](LICENSE) dosyasına bakınız.

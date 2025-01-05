@@ -24,10 +24,10 @@ public class BaseMethods extends DriverManager {
     public void navigateToURL(String url) {
         try {
             getDriver().get(url);
-            logger.info("Successfully navigated to URL: {} | URL'ye başarıyla gidildi: {}", url, url);
+            logger.info("Navigated to URL: {} successfully | URL'ye başarıyla gidildi: {}", url, url);
         } catch (Exception e) {
-            logger.error("Failed to navigate to URL: '{}'. Exception: {} | URL'ye gidilemedi: '{}'. Hata: {}",
-                    url, e.getMessage(), url, e.getMessage(), e);
+            logger.error("Failed to navigate to URL: {}. Error: {} | URL'ye gidilemedi: {}. Hata: {}", 
+                    url, e.getMessage(), url, e.getMessage());
             throw e;
         }
     }
@@ -35,10 +35,10 @@ public class BaseMethods extends DriverManager {
     public void refreshPage() {
         try {
             getDriver().navigate().refresh();
-            logger.info("Page refreshed successfully | Sayfa başarıyla yenilendi");
+            logger.info("Page refreshed successfully | Sayfa yenilenme işlemi başarılı");
         } catch (Exception e) {
-            logger.error("Failed to refresh the page. Exception: {} | Sayfa yenilenemedi. Hata: {}",
-                    e.getMessage(), e.getMessage(), e);
+            logger.error("Failed to refresh page. Error: {} | Sayfa yenileme işlemi başarısız. Hata: {}", 
+                    e.getMessage(), e.getMessage());
             throw e;
         }
     }
@@ -47,11 +47,11 @@ public class BaseMethods extends DriverManager {
         try {
             var allWindowHandles = getDriver().getWindowHandles();
             getDriver().switchTo().window((String) allWindowHandles.toArray()[tabIndex]);
-            logger.info("Successfully switched to tab at index {} | {} indeksli sekmeye başarıyla geçildi",
+            logger.info("Switched to tab index: {} | Sekme indeksine geçildi: {}", 
                     tabIndex, tabIndex);
         } catch (Exception e) {
-            logger.error("Failed to switch to tab at index {}. Exception: {} | {} indeksli sekmeye geçilemedi. Hata: {}",
-                    tabIndex, e.getMessage(), tabIndex, e.getMessage(), e);
+            logger.error("Failed to switch to tab index {}. Error: {} | Sekme indeksine geçilemedi. Hata: {}", 
+                    tabIndex, e.getMessage(), tabIndex, e.getMessage());
             throw e;
         }
     }
@@ -62,10 +62,10 @@ public class BaseMethods extends DriverManager {
                     elementName, page, page, elementName);
             WebElement element = findElement(page, elementName, "clickable");
             element.click();
-            logger.info("Successfully clicked element '{}' on page '{}' | '{}' sayfasındaki '{}' elementine başarıyla tıklandı",
+            logger.info("Clicked on element '{}' on page '{}' successfully | '{}' sayfasındaki '{}' elementine başarıyla tıklandı",
                     elementName, page, page, elementName);
         } catch (Exception e) {
-            logger.error("Failed to click element '{}' on page '{}'. Error: {} | '{}' sayfasındaki '{}' elementine tıklanamadı. Hata: {}",
+            logger.error("Failed to click element '{}' on page '{}'. Error: {} | '{}' sayfasındaki '{}' elementine tıklanamadı. Hata: {}", 
                     elementName, page, e.getMessage(), page, elementName, e.getMessage());
             logger.debug("Stack trace:", e);
             throw e;
@@ -76,13 +76,13 @@ public class BaseMethods extends DriverManager {
         try {
             WebElement element = findElement(page, elementName, "clickable");
             element.click();
-            logger.info("Successfully clicked on element '{}' on page '{}' | '{}' sayfasındaki '{}' elementine başarıyla tıklandı",
+            logger.info("Clicked on element '{}' on page '{}' successfully | '{}' sayfasındaki '{}' elementine başarıyla tıklandı",
                     elementName, page, page, elementName);
         } catch (NoSuchElementException e) {
             logger.warn("Element '{}' not found on page '{}', skipping click | '{}' sayfasında '{}' elementi bulunamadı, tıklama atlanıyor",
                     elementName, page, page, elementName);
         } catch (Exception e) {
-            logger.error("Error occurred while trying to click element '{}' on page '{}'. Exception: {} | '{}' sayfasındaki '{}' elementine tıklanırken hata oluştu. Hata: {}",
+            logger.error("Error occurred while trying to click element '{}' on page '{}'. Error: {} | '{}' sayfasındaki '{}' elementine tıklanırken hata oluştu. Hata: {}", 
                     elementName, page, e.getMessage(), page, elementName, e.getMessage(), e);
         }
     }
@@ -92,10 +92,11 @@ public class BaseMethods extends DriverManager {
     public void waitBySeconds(int seconds) {
         try {
             Thread.sleep(seconds * 1000L);
-            logger.info("Waited for {} seconds | {} saniye beklendi", seconds, seconds);
+            logger.info("Waited for {} seconds successfully | {} saniye beklendi", seconds, seconds);
         } catch (InterruptedException e) {
-            logger.error("Error while waiting for {} seconds. Exception: {} | {} saniye beklenirken hata oluştu. Hata: {}",
+            logger.error("Error while waiting for {} seconds. Error: {} | {} saniye beklenirken hata oluştu. Hata: {}", 
                     seconds, e.getMessage(), seconds, e.getMessage(), e);
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -106,10 +107,10 @@ public class BaseMethods extends DriverManager {
             WebElement element = findElement(page, elementName, "visible");
             element.clear();
             element.sendKeys(text);
-            logger.info("Successfully entered text '{}' into element '{}' on page '{}' | '{}' sayfasındaki '{}' elementine '{}' metni başarıyla girildi",
+            logger.info("Entered text '{}' into element '{}' on page '{}' successfully | '{}' sayfasındaki '{}' elementine '{}' metni başarıyla girildi",
                     text, elementName, page, page, elementName, text);
         } catch (Exception e) {
-            logger.error("Failed to enter text '{}' into element '{}' on page '{}'. Error: {} | '{}' sayfasındaki '{}' elementine '{}' metni girilemedi. Hata: {}",
+            logger.error("Failed to enter text '{}' into element '{}' on page '{}'. Error: {} | '{}' sayfasındaki '{}' elementine '{}' metni girilemedi. Hata: {}", 
                     text, elementName, page, e.getMessage(), page, elementName, text, e.getMessage());
             logger.debug("Stack trace:", e);
             throw e;
@@ -120,10 +121,10 @@ public class BaseMethods extends DriverManager {
         try {
             WebElement element = findElement(page, elementName, "visible");
             element.sendKeys(Keys.RETURN);
-            logger.info("Pressed Enter on element '{}' on page '{}' | '{}' sayfasındaki '{}' elementine Enter tuşuna basıldı",
+            logger.info("Pressed Enter on element '{}' on page '{}' successfully | '{}' sayfasındaki '{}' elementine Enter tuşuna basıldı",
                     elementName, page, page, elementName);
         } catch (Exception e) {
-            logger.error("Failed to press Enter on element '{}' on page '{}'. Exception: {} | '{}' sayfasındaki '{}' elementine Enter tuşuna basılamadı. Hata: {}",
+            logger.error("Failed to press Enter on element '{}' on page '{}'. Error: {} | '{}' sayfasındaki '{}' elementine Enter tuşuna basılamadı. Hata: {}", 
                     elementName, page, e.getMessage(), page, elementName, e.getMessage(), e);
             throw e;
         }
@@ -133,12 +134,12 @@ public class BaseMethods extends DriverManager {
         try {
             WebElement element = findElement(page, elementName, "visible");
             if (element == null) {
-                logger.error("Element '{}' not found on page '{}'. Error: {} | '{}' sayfasında '{}' elementi bulunamadı. Hata: {}",
+                logger.error("Element '{}' not found on page '{}'. Error: {} | '{}' sayfasında '{}' elementi bulunamadı. Hata: {}", 
                         elementName, page, errorMessage, page, elementName, errorMessage);
                 throw new NoSuchElementException(errorMessage);
             }
         } catch (Exception e) {
-            logger.error("Error while checking existence of element '{}' on page '{}'. Exception: {} | '{}' sayfasındaki '{}' elementinin varlığı kontrol edilirken hata oluştu. Hata: {}",
+            logger.error("Error while checking existence of element '{}' on page '{}'. Error: {} | '{}' sayfasındaki '{}' elementinin varlığı kontrol edilirken hata oluştu. Hata: {}", 
                     elementName, page, e.getMessage(), page, elementName, e.getMessage(), e);
             throw e;
         }
@@ -146,12 +147,12 @@ public class BaseMethods extends DriverManager {
 
     public void verifyElementTextIgnoreCase(String page, String elementName, String expectedText) {
         try {
-            logger.info("Verifying text of element '{}' on page '{}' against expected text '{}' | '{}' sayfasındaki '{}' elementinin metni '{}' ile karşılaştırılıyor",
+            logger.info("Verifying text of element '{}' on page '{}' against expected text '{}' | '{}' sayfasındaki '{}' elementinin metni '{}' ile karşılaştırılmaya çalışılıyor",
                     elementName, page, expectedText, page, elementName, expectedText);
             String actualText = getElementText(page, elementName);
             assertTextIgnoreCase(actualText, expectedText);
         } catch (Exception e) {
-            logger.error("Failed to verify text for element '{}' on page '{}'. Exception: {} | '{}' sayfasındaki '{}' elementinin metni doğrulanamadı. Hata: {}",
+            logger.error("Failed to verify text for element '{}' on page '{}'. Error: {} | '{}' sayfasındaki '{}' elementinin metni doğrulanamadı. Hata: {}", 
                     elementName, page, e.getMessage(), page, elementName, e.getMessage(), e);
             throw e;
         }
@@ -159,13 +160,13 @@ public class BaseMethods extends DriverManager {
 
     public void compareElementTextToSavedValue(String page, String elementName, String expectedValueKey) {
         try {
-            logger.info("Comparing text of element '{}' on page '{}' to saved value with key '{}' | '{}' sayfasındaki '{}' elementinin metni '{}' anahtarındaki değer ile karşılaştırılıyor",
+            logger.info("Comparing text of element '{}' on page '{}' to saved value with key '{}' | '{}' sayfasındaki '{}' elementinin metni '{}' anahtarındaki değer ile karşılaştırılmaya çalışılıyor",
                     elementName, page, expectedValueKey, page, elementName, expectedValueKey);
             String actualText = getElementText(page, elementName);
             String expectedValue = getStoredValue(expectedValueKey);
             assertTextContains(actualText, expectedValue, expectedValueKey);
         } catch (Exception e) {
-            logger.error("Failed to compare text for element '{}' on page '{}'. Exception: {} | '{}' sayfasındaki '{}' elementinin metni karşılaştırılamadı. Hata: {}",
+            logger.error("Failed to compare text for element '{}' on page '{}'. Error: {} | '{}' sayfasındaki '{}' elementinin metni karşılaştırılamadı. Hata: {}", 
                     elementName, page, e.getMessage(), page, elementName, e.getMessage(), e);
             throw e;
         }
@@ -178,7 +179,7 @@ public class BaseMethods extends DriverManager {
                     elementName, page, page, elementName);
             return element.getText().trim();
         } catch (Exception e) {
-            logger.error("Failed to get text of element '{}' on page '{}'. Exception: {} | '{}' sayfasındaki '{}' elementinin metni alınamadı. Hata: {}",
+            logger.error("Failed to get text of element '{}' on page '{}'. Error: {} | '{}' sayfasındaki '{}' elementinin metni alınamadı. Hata: {}", 
                     elementName, page, e.getMessage(), page, elementName, e.getMessage(), e);
             throw e;
         }
@@ -217,7 +218,7 @@ public class BaseMethods extends DriverManager {
         try {
             By locator = LocatorRepository.getLocator(page, elementName);
             getDriver().findElement(locator);
-            logger.info("Element '{}' exists on page '{}' | '{}' sayfasında '{}' elementi mevcut",
+            logger.info("Element '{}' exists on page '{}' | '{}' sayfasında '{}' elementi mevcuttur",
                     elementName, page, page, elementName);
         } catch (NoSuchElementException e) {
             logger.error("Element '{}' not found on page '{}' | '{}' sayfasında '{}' elementi bulunamadı",
@@ -234,7 +235,7 @@ public class BaseMethods extends DriverManager {
             logger.info("Saved text value of element '{}' from page '{}' with key '{}' | '{}' sayfasındaki '{}' elementinin metni '{}' anahtarı ile kaydedildi",
                     elementName, page, saveKey, page, elementName, saveKey);
         } catch (Exception e) {
-            logger.error("Failed to save text value of element '{}' from page '{}'. Exception: {} | '{}' sayfasındaki '{}' elementinin metni kaydedilemedi. Hata: {}",
+            logger.error("Failed to save text value of element '{}' from page '{}'. Error: {} | '{}' sayfasındaki '{}' elementinin metni kaydedilemedi. Hata: {}", 
                     elementName, page, e.getMessage(), page, elementName, e.getMessage(), e);
             throw e;
         }
@@ -245,7 +246,7 @@ public class BaseMethods extends DriverManager {
             logger.info("Attempting to verify page title for page '{}'. Expected title: '{}' | '{}' sayfasının başlığı doğrulanıyor. Beklenen başlık: '{}'",
                     page, expectedTitle, page, expectedTitle);
             String actualTitle = getDriver().getTitle();
-            if (actualTitle != null && actualTitle.equals(expectedTitle)) {
+            if (expectedTitle.equals(actualTitle)) { // Null kontrolü burada yapılıyor
                 logger.info("Page title verification successful. Page '{}' has expected title: '{}' | Sayfa başlığı doğrulaması başarılı. '{}' sayfasının başlığı beklenen değerde: '{}'",
                         page, expectedTitle, page, expectedTitle);
             } else {
@@ -254,26 +255,30 @@ public class BaseMethods extends DriverManager {
                 throw new AssertionError("Expected title: " + expectedTitle + " but got: " + actualTitle + " on page: " + page);
             }
         } catch (Exception e) {
-            logger.error("Failed to verify page title for page '{}'. Error: {} | '{}' sayfasının başlığı doğrulanamadı. Hata: {}",
+            logger.error("Failed to verify page title for page '{}'. Error: {} | '{}' sayfasının başlığı doğrulanamadı. Hata: {}", 
                     page, e.getMessage(), page, e.getMessage());
             logger.debug("Stack trace:", e);
             throw e;
         }
     }
 
+
     public void verifyElementIsEnabled(String page, String elementName) {
         try {
-            logger.info("Attempting to verify element '{}' on page '{}' is enabled", elementName, page);
+            logger.info("Attempting to verify element '{}' on page '{}' is enabled | '{}' sayfasındaki '{}' elementinin etkinliği doğrulanıyor",
+                    elementName, page, page, elementName);
             WebElement element = findElement(page, elementName, "visible");
-            if (element.isEnabled()) {
-                logger.info("Element '{}' on page '{}' is enabled as expected", elementName, page);
+            if (element != null && element.isEnabled()) {
+                logger.info("Element '{}' on page '{}' is enabled as expected | '{}' sayfasındaki '{}' elementi beklendiği gibi etkin",
+                        elementName, page, page, elementName);
             } else {
-                logger.error("Element '{}' on page '{}' is not enabled when it should be", elementName, page);
+                logger.error("Element '{}' on page '{}' is not enabled when it should be | '{}' sayfasındaki '{}' elementi etkin olması gerekirken etkin değil",
+                        elementName, page, page, elementName);
                 throw new AssertionError("Element " + elementName + " on " + page + " is not enabled.");
             }
         } catch (Exception e) {
-            logger.error("Failed to verify if element '{}' on page '{}' is enabled. Error: {}",
-                    elementName, page, e.getMessage());
+            logger.error("Failed to verify if element '{}' on page '{}' is enabled. Error: {} | '{}' sayfasındaki '{}' elementinin etkinliği doğrulanamadı. Hata: {}", 
+                    elementName, page, e.getMessage(), page, elementName, e.getMessage());
             logger.debug("Stack trace:", e);
             throw e;
         }
@@ -281,17 +286,20 @@ public class BaseMethods extends DriverManager {
 
     public void verifyElementIsDisabled(String page, String elementName) {
         try {
-            logger.info("Attempting to verify element '{}' on page '{}' is disabled", elementName, page);
+            logger.info("Attempting to verify element '{}' on page '{}' is disabled | '{}' sayfasındaki '{}' elementinin devre dışı durumu doğrulanıyor",
+                    elementName, page, page, elementName);
             WebElement element = findElement(page, elementName, "visible");
-            if (!element.isEnabled()) {
-                logger.info("Element '{}' on page '{}' is disabled as expected", elementName, page);
+            if (element != null && !element.isEnabled()) {
+                logger.info("Element '{}' on page '{}' is disabled as expected | '{}' sayfasındaki '{}' elementi beklendiği gibi devre dışı",
+                        elementName, page, page, elementName);
             } else {
-                logger.error("Element '{}' on page '{}' is enabled when it should be disabled", elementName, page);
+                logger.error("Element '{}' on page '{}' is enabled when it should be disabled | '{}' sayfasındaki '{}' elementi devre dışı olması gerekirken etkin",
+                        elementName, page, page, elementName);
                 throw new AssertionError("Element " + elementName + " on " + page + " is enabled when it should be disabled.");
             }
         } catch (Exception e) {
-            logger.error("Failed to verify if element '{}' on page '{}' is disabled. Error: {}",
-                    elementName, page, e.getMessage());
+            logger.error("Failed to verify if element '{}' on page '{}' is disabled. Error: {} | '{}' sayfasındaki '{}' elementinin devre dışı durumu doğrulanamadı. Hata: {}", 
+                    elementName, page, e.getMessage(), page, elementName, e.getMessage());
             logger.debug("Stack trace:", e);
             throw e;
         }
@@ -299,45 +307,90 @@ public class BaseMethods extends DriverManager {
 
     public void verifyElementText(String page, String elementName, String expectedText) {
         try {
-            logger.info("Attempting to verify text of element '{}' on page '{}'. Expected text: '{}'", elementName, page, expectedText);
+            logger.info("Attempting to verify text of element '{}' on page '{}'. Expected text: '{}' | '{}' sayfasındaki '{}' elementinin metni doğrulanıyor. Beklenen metin: '{}'",
+                    elementName, page, expectedText, page, elementName, expectedText);
             WebElement element = findElement(page, elementName, "visible");
             String actualText = element.getText();
-            if (actualText.equals(expectedText)) {
-                logger.info("Text verification successful. Element '{}' on page '{}' contains expected text: '{}'",
-                        elementName, page, expectedText);
+            if (expectedText.equals(actualText)) { // Null kontrolü burada yapılıyor
+                logger.info("Text verification successful. Element '{}' on page '{}' contains expected text: '{}' | Metin doğrulaması başarılı. '{}' sayfasındaki '{}' elementi beklendiği gibi metni içeriyor: '{}'",
+                        elementName, page, expectedText, page, elementName, expectedText);
             } else {
-                logger.error("Text verification failed. Element '{}' on page '{}'. Expected: '{}', but got: '{}'",
-                        elementName, page, expectedText, actualText);
+                logger.error("Text verification failed. Element '{}' on page '{}'. Expected: '{}', but got: '{}' | Metin doğrulaması başarısız. '{}' sayfasındaki '{}' elementi. Beklenen: '{}', alınan: '{}'",
+                        elementName, page, expectedText, actualText, page, elementName, expectedText, actualText);
                 throw new AssertionError("Expected text: " + expectedText + " but got: " + actualText);
             }
         } catch (Exception e) {
-            logger.error("Failed to verify text of element '{}' on page '{}'. Error: {}", elementName, page, e.getMessage());
+            logger.error("Failed to verify text of element '{}' on page '{}'. Error: {} | '{}' sayfasındaki '{}' elementinin metni doğrulanamadı. Hata: {}", 
+                    elementName, page, e.getMessage(), page, elementName, e.getMessage());
             logger.debug("Stack trace:", e);
             throw e;
         }
     }
 
     public void scrollToElement(String page, String elementName) {
-        WebElement element = findElement(page, elementName, "visible");  // Add "visible" condition
-        JavascriptExecutor js = (JavascriptExecutor) getDriver();
-        js.executeScript("arguments[0].scrollIntoView();", element);
+        try {
+            logger.info("Attempting to scroll to element '{}' on page '{}' | '{}' sayfasındaki '{}' elementine kaydırma işlemi yapılıyor",
+                    elementName, page, page, elementName);
+            WebElement element = findElement(page, elementName, "visible");
+            JavascriptExecutor js = (JavascriptExecutor) getDriver();
+            js.executeScript("arguments[0].scrollIntoView();", element);
+            logger.info("Successfully scrolled to element '{}' on page '{}' | '{}' sayfasındaki '{}' elementine başarıyla kaydırıldı",
+                    elementName, page, page, elementName);
+        } catch (Exception e) {
+            logger.error("Failed to scroll to element '{}' on page '{}'. Error: {} | '{}' sayfasındaki '{}' elementine kaydırma işlemi başarısız. Hata: {}", 
+                    elementName, page, e.getMessage(), page, elementName, e.getMessage());
+            logger.debug("Stack trace:", e);
+            throw e;
+        }
     }
-
     public void switchToIframe(String frameName) {
-        WebElement iframe = getDriver().findElement(By.name(frameName)); // or use By.id, By.cssSelector, etc.
-        getDriver().switchTo().frame(iframe);
+        try {
+            logger.info("Attempting to switch to iframe '{}' | '{}' iframe'ine geçiş yapılıyor",
+                    frameName, frameName);
+            WebElement iframe = getDriver().findElement(By.name(frameName));
+            getDriver().switchTo().frame(iframe);
+            logger.info("Successfully switched to iframe '{}' | '{}' iframe'ine başarıyla geçildi",
+                    frameName, frameName);
+        } catch (Exception e) {
+            logger.error("Failed to switch to iframe '{}'. Error: {} | '{}' iframe'ine geçilemedi. Hata: {}", 
+                    frameName, e.getMessage(), frameName, e.getMessage());
+            logger.debug("Stack trace:", e);
+            throw e;
+        }
     }
 
     public void switchOutOfIframe() {
-        getDriver().switchTo().defaultContent();
+        try {
+            logger.info("Attempting to switch out of iframe | Iframe'den çıkma işlemi yapılıyor");
+            getDriver().switchTo().defaultContent();
+            logger.info("Successfully switched out of iframe | Iframe'den başarıyla çıkıldı");
+        } catch (Exception e) {
+            logger.error("Failed to switch out of iframe. Error: {} | Iframe'den çıkma işlemi başarısız. Hata: {}", 
+                    e.getMessage(), e.getMessage());
+            logger.debug("Stack trace:", e);
+            throw e;
+        }
     }
-
     public void verifyElementAttribute(String page, String elementName, String attributeName, String expectedValue) {
-        WebElement element = findElement(page, elementName, "visible");
-        JavascriptExecutor js = (JavascriptExecutor) getDriver();
-        String actualValue = (String) js.executeScript("return arguments[0].getAttribute(arguments[1]);", element, attributeName);
-        if (actualValue == null || !actualValue.equals(expectedValue)) {
-            throw new AssertionError("Expected attribute value: " + expectedValue + " but got: " + actualValue);
+        try {
+            logger.info("Attempting to verify attribute '{}' of element '{}' on page '{}'. Expected value: '{}' | '{}' sayfasındaki '{}' elementinin '{}' attribute'unun doğrulanması. Beklenen değer: '{}'",
+                    attributeName, elementName, page, expectedValue, page, elementName, attributeName, expectedValue);
+            WebElement element = findElement(page, elementName, "visible");
+            JavascriptExecutor js = (JavascriptExecutor) getDriver();
+            String actualValue = (String) js.executeScript("return arguments[0].getAttribute(arguments[1]);", element, attributeName);
+            if (expectedValue.equals(actualValue)) { // Null kontrolü burada yapılıyor
+                logger.info("Attribute verification successful. Element '{}' on page '{}' has expected attribute value: '{}' | Attribute doğrulaması başarılı. '{}' sayfasındaki '{}' elementi beklendiği gibi attribute değerini içeriyor: '{}'",
+                        elementName, page, expectedValue, page, elementName, expectedValue);
+            } else {
+                logger.error("Attribute verification failed. Element '{}' on page '{}'. Expected: '{}', but got: '{}' | Attribute doğrulaması başarısız. '{}' sayfasındaki '{}' elementi. Beklenen: '{}', alınan: '{}'",
+                        elementName, page, expectedValue, actualValue, page, elementName, expectedValue, actualValue);
+                throw new AssertionError("Expected attribute value: " + expectedValue + " but got: " + actualValue);
+            }
+        } catch (Exception e) {
+            logger.error("Failed to verify attribute '{}' of element '{}' on page '{}'. Error: {} | '{}' sayfasındaki '{}' elementinin '{}' attribute'unun doğrulanması başarısız. Hata: {}", 
+                    attributeName, elementName, page, e.getMessage(), page, elementName, attributeName, e.getMessage());
+            logger.debug("Stack trace:", e);
+            throw e;
         }
     }
 
@@ -347,7 +400,7 @@ public class BaseMethods extends DriverManager {
             logger.info("Attempting to verify current URL. Expected URL: '{}' | Mevcut URL doğrulanıyor. Beklenen URL: '{}'",
                     expectedURL, expectedURL);
             String currentURL = getDriver().getCurrentUrl();
-            if (currentURL.equals(expectedURL)) {
+            if (expectedURL.equals(currentURL)) { // Null kontrolü burada yapılıyor
                 logger.info("URL verification successful. Current URL matches expected URL: '{}' | URL doğrulaması başarılı. Mevcut URL beklenen URL ile eşleşiyor: '{}'",
                         expectedURL, expectedURL);
             } else {
@@ -356,14 +409,12 @@ public class BaseMethods extends DriverManager {
                 throw new AssertionError("Expected URL: " + expectedURL + " but got: " + currentURL);
             }
         } catch (Exception e) {
-            logger.error("Failed to verify URL. Error: {} | URL doğrulanamadı. Hata: {}",
+            logger.error("Failed to verify URL. Error: {} | URL doğrulanamadı. Hata: {}", 
                     e.getMessage(), e.getMessage());
             logger.debug("Stack trace:", e);
             throw e;
         }
     }
-
-
     public void selectDropdownOption(String page, String dropdown, String option) {
         try {
             logger.info("Attempting to select option '{}' from dropdown '{}' on page '{}' | '{}' sayfasındaki '{}' açılır menüsünden '{}' seçeneği seçilmeye çalışılıyor",
@@ -374,7 +425,7 @@ public class BaseMethods extends DriverManager {
             logger.info("Successfully selected option '{}' from dropdown '{}' on page '{}' | '{}' sayfasındaki '{}' açılır menüsünden '{}' seçeneği başarıyla seçildi",
                     option, dropdown, page, page, dropdown, option);
         } catch (Exception e) {
-            logger.error("Failed to select option '{}' from dropdown '{}' on page '{}'. Error: {} | '{}' sayfasındaki '{}' açılır menüsünden '{}' seçeneği seçilemedi. Hata: {}",
+            logger.error("Failed to select option '{}' from dropdown '{}' on page '{}'. Error: {} | '{}' sayfasındaki '{}' açılır menüsünden '{}' seçeneği seçilemedi. Hata: {}", 
                     option, dropdown, page, e.getMessage(), page, dropdown, option, e.getMessage());
             logger.debug("Stack trace:", e);
             throw e;
@@ -390,7 +441,7 @@ public class BaseMethods extends DriverManager {
             logger.info("Successfully uploaded file '{}' using element '{}' on page '{}' | '{}' sayfasındaki '{}' elementi kullanılarak '{}' dosyası başarıyla yüklendi",
                     filePath, elementName, page, page, elementName, filePath);
         } catch (Exception e) {
-            logger.error("Failed to upload file '{}' using element '{}' on page '{}'. Error: {} | '{}' sayfasındaki '{}' elementi kullanılarak '{}' dosyası yüklenemedi. Hata: {}",
+            logger.error("Failed to upload file '{}' using element '{}' on page '{}'. Error: {} | '{}' sayfasındaki '{}' elementi kullanılarak '{}' dosyası yüklenemedi. Hata: {}", 
                     filePath, elementName, page, e.getMessage(), page, elementName, filePath, e.getMessage());
             logger.debug("Stack trace:", e);
             throw e;
@@ -399,10 +450,10 @@ public class BaseMethods extends DriverManager {
 
     public void verifyImageVisibility(String page, String elementName) {
         try {
-            logger.info("Attempting to verify visibility of image '{}' on page '{}' | '{}' sayfasındaki '{}' görselinin görünürlüğü kontrol ediliyor",
+            logger.info("Attempting to verify visibility of image '{}' on page '{}' | '{}' sayfasındaki '{}' görselinin görünürlüğü doğrulanıyor",
                     elementName, page, page, elementName);
             WebElement element = findElement(page, elementName, "visible");
-            if (element.isDisplayed()) {
+            if (element != null && element.isDisplayed()) {
                 logger.info("Image '{}' on page '{}' is visible as expected | '{}' sayfasındaki '{}' görseli beklendiği gibi görünür durumda",
                         elementName, page, page, elementName);
             } else {
@@ -411,16 +462,14 @@ public class BaseMethods extends DriverManager {
                 throw new AssertionError("Image " + elementName + " on " + page + " is not visible.");
             }
         } catch (Exception e) {
-            logger.error("Failed to verify visibility of image '{}' on page '{}'. Error: {} | '{}' sayfasındaki '{}' görselinin görünürlüğü doğrulanamadı. Hata: {}",
+            logger.error("Failed to verify visibility of image '{}' on page '{}'. Error: {} | '{}' sayfasındaki '{}' görselinin görünürlüğü doğrulanamadı. Hata: {}", 
                     elementName, page, e.getMessage(), page, elementName, e.getMessage());
             logger.debug("Stack trace:", e);
             throw e;
         }
     }
 
-
-    private WebElement waitForElement(String page, String elementName, String condition) {
-        By locator = getLocatorFromPage(page, elementName);
+    private WebElement waitForElement(By locator, String condition) {
         FluentWait<WebDriver> wait = new FluentWait<>(getDriver())
                 .withTimeout(Duration.ofSeconds(DEFAULT_TIMEOUT_SECONDS))
                 .pollingEvery(Duration.ofMillis(DEFAULT_POLLING_INTERVAL_MILLIS))
@@ -430,16 +479,12 @@ public class BaseMethods extends DriverManager {
             case "clickable" -> wait.until(ExpectedConditions.elementToBeClickable(locator));
             case "visible" -> wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
             case "present" -> wait.until(ExpectedConditions.presenceOfElementLocated(locator));
-            default -> wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+            default -> throw new IllegalArgumentException("Invalid condition: " + condition);
         };
     }
 
     private WebElement findElement(String page, String elementName, String condition) {
         By locator = LocatorRepository.getLocator(page, elementName);
-        return waitForElement(page, elementName, condition);
-    }
-
-    private By getLocatorFromPage(String page, String elementName) {
-        return LocatorRepository.getLocator(page, elementName);
+        return waitForElement(locator, condition);
     }
 }
