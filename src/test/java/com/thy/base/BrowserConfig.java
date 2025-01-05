@@ -27,7 +27,7 @@ public class BrowserConfig {
         options.addArguments("--disable-dev-shm-usage");
         options.setAcceptInsecureCerts(true);
         
-        logger.info("Chrome options configured");
+        logger.info("Chrome options configured successfully | Chrome ayarları başarıyla yapılandırıldı");
         return options;
     }
 
@@ -41,7 +41,7 @@ public class BrowserConfig {
         options.addArguments("--disable-dev-shm-usage");
         options.setAcceptInsecureCerts(true);
         
-        logger.info("Firefox options configured");
+        logger.info("Firefox options configured successfully | Firefox ayarları başarıyla yapılandırıldı");
         return options;
     }
 
@@ -58,7 +58,7 @@ public class BrowserConfig {
         options.addArguments("--disable-dev-shm-usage");
         options.setAcceptInsecureCerts(true);
         
-        logger.info("Edge options configured");
+        logger.info("Edge options configured successfully | Edge ayarları başarıyla yapılandırıldı");
         return options;
     }
 
@@ -71,7 +71,7 @@ public class BrowserConfig {
         options.setCapability("safari.options.dataDir", "/tmp/safari_data");
         options.setCapability("safari.options.port", 0);
         
-        logger.info("Safari options configured");
+        logger.info("Safari options configured successfully (with clean session and data directory) | Safari ayarları başarıyla yapılandırıldı (temiz oturum ve veri dizini ile)");
         return options;
     }
 }

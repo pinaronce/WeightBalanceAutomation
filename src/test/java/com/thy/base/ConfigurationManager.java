@@ -4,29 +4,38 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ConfigurationManager {
-        private static final Logger logger = LogManager.getLogger(ConfigurationManager.class);
+    private static final Logger logger = LogManager.getLogger(ConfigurationManager.class);
 
-        private static final BrowserConfig.BrowserType DEFAULT_BROWSER = BrowserConfig.BrowserType.CHROME;
-        private static final String DEFAULT_GRID_URL = "http://localhost:4444/wd/hub";
-        private static final boolean USE_GRID = false;
+    private static final BrowserConfig.BrowserType DEFAULT_BROWSER = BrowserConfig.BrowserType.CHROME;
+    private static final String GRID_URL = "http://localhost:4444/wd/hub";
+    private static final boolean USE_GRID = false;
 
-        private static final String BROWSER_PROPERTY = "browser";
-        private static final String GRID_URL_PROPERTY = "gridUrl";
-
-        public static BrowserConfig.BrowserType getBrowserType() {
-            String browser = System.getProperty(BROWSER_PROPERTY, DEFAULT_BROWSER.name());
-            BrowserConfig.BrowserType browserType = BrowserConfig.BrowserType.valueOf(browser.toUpperCase());
-            logger.info("Selected browser: {}", browserType);
-            return browserType;
-        }
-
-        public static boolean useGrid() {
-            return USE_GRID;
-        }
-
-        public static String getGridConfig() {
-            String gridUrl = System.getProperty(GRID_URL_PROPERTY, DEFAULT_GRID_URL);
-            logger.info("Grid status: {} with URL: {}", USE_GRID ? "enabled" : "disabled", gridUrl);
-            return USE_GRID ? gridUrl : null;
+    public static BrowserConfig.BrowserType getBrowser() {
+        try {
+            String browserProperty = System.getProperty("browser");
+            BrowserConfig.BrowserType selectedBrowser = browserProperty != null ? 
+                BrowserConfig.BrowserType.valueOf(browserProperty.toUpperCase()) : 
+                DEFAULT_BROWSER;
+            
+            logger.info("Selected browser: {} (Default: {}) | Seçilen tarayıcı: {} (Varsayılan: {})", 
+                selectedBrowser, DEFAULT_BROWSER, selectedBrowser, DEFAULT_BROWSER);
+            return selectedBrowser;
+        } catch (IllegalArgumentException e) {
+            logger.warn("Invalid browser type. Using default: {} | Geçersiz tarayıcı tipi. Varsayılan kullanılıyor: {}", 
+                DEFAULT_BROWSER, DEFAULT_BROWSER);
+            return DEFAULT_BROWSER;
         }
     }
+
+    public static String getGridUrl() {
+        if (!USE_GRID) {
+            logger.info("Grid is disabled. Running tests locally | Grid kapalı. Testler lokalde çalışacak");
+            return null;
+        }
+
+        String configuredUrl = System.getProperty("gridUrl", GRID_URL);
+        logger.info("Grid URL: {}, Status: {} | Grid URL: {}, Durum: {}", 
+            configuredUrl, USE_GRID ? "enabled" : "disabled", configuredUrl, USE_GRID ? "açık" : "kapalı");
+        return configuredUrl;
+    }
+}
